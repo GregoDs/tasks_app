@@ -7,6 +7,7 @@ import CreateTaskPage from './pages/CreateTaskPage';
 import TaskDetailPage from './pages/TaskDetailPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import SuccessPage from './pages/SuccessPage';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/tasks/:id" element={<TaskDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/success" element={<SuccessPage />} /> {/* Use element instead of component */}
       </Routes>
     </Router>
   );

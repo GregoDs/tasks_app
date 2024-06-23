@@ -16,16 +16,16 @@ task_schema = TaskSchema()
 project_schema = ProjectSchema()
 
 class UserResource(Resource):
-    def get(self):
-        users = User.query.all()
-        return user_schema.dump(users, many=True), 200
-
     def post(self):
-        new_user = user_schema.load(request.json)
+        data = request.get_json()
+        new_user = User(email=data['email'], username=data['username'])
+        new_user.set_password(data['password'])
+        
         db.session.add(new_user)
         db.session.commit()
-        return user_schema.dump(new_user), 201
-
+        
+        return {'message': 'User created successfully'}, 201
+    
 class TaskResource(Resource):
     def get(self):
         tasks = Task.query.all()

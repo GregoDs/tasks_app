@@ -1,28 +1,40 @@
-// RegisterPage.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Auth.css';
-import { registerUser } from '../api';  // Adjust the path as needed
+import { registerUser } from '../api'; // Adjust the path as needed
 
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState(null); // State to hold error message
-
+  const navigate = useNavigate(); 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const newUser = await registerUser(formData);
+      const response = await fetch('http://localhost:5000/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+  
+      const data = await response.json();
+      console.log('Registration successful:', data);
       // Handle successful registration (e.g., show success message, redirect user)
-      console.log('Registration successful. New user:', newUser);
+      navigate('/success'); // Navigate to the Menu page after successful registration
     } catch (error) {
-      // Handle registration error
       console.error('Registration error:', error);
-      setError('Registration failed. Please try again.'); // Set error message
+      // Handle registration error
+      setError('Registration failed'); // Update error state
     }
   };
 
@@ -31,6 +43,10 @@ const RegisterPage = () => {
       <h2>Register</h2>
       {error && <div className="error-message">{error}</div>} {/* Display error message */}
       <form onSubmit={handleSubmit} className="auth-form">
+        <div className="form-group">
+          <label>Username</label>
+          <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+        </div>
         <div className="form-group">
           <label>Email</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} required />
